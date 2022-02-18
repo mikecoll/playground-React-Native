@@ -24,7 +24,8 @@
   "scripts": {
     "test": "jest",
     "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"**/*.{js,ts,tsx}\" && cd ios && Pods/SwiftLint/swiftlint --strict",
+    "format": "swift-format -r -i --configuration ios/.swift-format ios",
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
