@@ -1,18 +1,42 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-polar-ble';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import { usePolarBle } from 'react-native-polar-ble';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const {
+    devices,
+    configure,
+    searchForDevice,
+    connectToDevice,
+    disconnectFromDevice,
+  } = usePolarBle();
 
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+  useEffect(() => {
+    configure(0xff);
+  }, [configure]);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Button title="Search for device" onPress={searchForDevice} />
+      {devices.map((x) => (
+        <View>
+          {x.state === 'connected' ? (
+            <Button
+              title="Disconnect"
+              onPress={() => disconnectFromDevice(x.deviceId)}
+            />
+          ) : (
+            <Button
+              title="Connect"
+              onPress={() => connectToDevice(x.deviceId)}
+              disabled={x.state === 'connecting'}
+            />
+          )}
+          <Text>{JSON.stringify(x, undefined, '\t')}</Text>
+        </View>
+      ))}
     </View>
   );
 }
