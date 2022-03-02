@@ -102,36 +102,6 @@
       }
     }
   },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native-community",
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
-  "prettier": {
-    "bracketSpacing": false,
-    "jsxBracketSameLine": true,
-    "singleQuote": true,
-    "trailingComma": "all",
-    "arrowParens": "avoid"
-  },
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
