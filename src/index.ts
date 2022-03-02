@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   EmitterSubscription,
   NativeEventEmitter,
@@ -37,51 +37,51 @@ export type PolarDevice = PolarDeviceInfo & {
 type AddPolarEventListener = {
   (
     eventType: 'deviceFound',
-    listener: (deviceInfo: PolarDeviceInfo) => any
+    listener: (deviceInfo: PolarDeviceInfo) => any,
   ): EmitterSubscription;
   (
     eventType: 'deviceConnecting',
-    listener: (deviceInfo: PolarDeviceInfo) => any
+    listener: (deviceInfo: PolarDeviceInfo) => any,
   ): EmitterSubscription;
   (
     eventType: 'deviceConnected',
-    listener: (deviceInfo: PolarDeviceInfo) => any
+    listener: (deviceInfo: PolarDeviceInfo) => any,
   ): EmitterSubscription;
   (
     eventType: 'deviceDisconnected',
-    listener: (deviceInfo: PolarDeviceInfo) => any
+    listener: (deviceInfo: PolarDeviceInfo) => any,
   ): EmitterSubscription;
   (
     eventType: 'batteryLevelReceived',
-    listener: (data: { identifier: string; batteryLevel: number }) => any
+    listener: (data: {identifier: string; batteryLevel: number}) => any,
   ): EmitterSubscription;
   (
     eventType: 'disInformationReceived',
-    listener: (data: { identifier: string; uuid: string; value: string }) => any
+    listener: (data: {identifier: string; uuid: string; value: string}) => any,
   ): EmitterSubscription;
   (eventType: 'blePowerOn', listener: () => any): EmitterSubscription;
   (eventType: 'blePowerOff', listener: () => any): EmitterSubscription;
   (
     eventType: 'hrFeatureReady',
-    listener: (identifier: string) => any
+    listener: (identifier: string) => any,
   ): EmitterSubscription;
   (
     eventType: 'ftpFeatureReady',
-    listener: (identifier: string) => any
+    listener: (identifier: string) => any,
   ): EmitterSubscription;
   (
     eventType: 'streamingFeaturesReady',
-    listener: (data: { identifier: string; features: number[] }) => any
+    listener: (data: {identifier: string; features: number[]}) => any,
   ): EmitterSubscription;
   (
     eventType: 'hrValueReceived',
-    listener: (data: { identifier: string; data: HeartRate }) => any
+    listener: (data: {identifier: string; data: HeartRate}) => any,
   ): EmitterSubscription;
 };
 
 const LINKING_ERROR =
   `The package 'react-native-polar-ble' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+  Platform.select({ios: "- You have run 'pod install'\n", default: ''}) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo managed workflow\n';
 
@@ -93,7 +93,7 @@ const PolarBle = NativeModules.PolarBle
         get() {
           throw new Error(LINKING_ERROR);
         },
-      }
+      },
     );
 
 export const {
@@ -115,20 +115,20 @@ const baseNativeEventEmitter = new NativeEventEmitter(PolarBle);
 
 export const PolarBleEventEmitter = Object.assign<
   typeof baseNativeEventEmitter,
-  { addEventListener: AddPolarEventListener }
+  {addEventListener: AddPolarEventListener}
 >(baseNativeEventEmitter, {
   addEventListener: (eventType, listener) => {
     // map to exported constant
     // i.e. deviceFound to DEVICE_FOUND
     const eventTypeConstant = eventType
       .split('')
-      .map((x) => (x === x.toUpperCase() ? `_${x}` : x))
-      .map((x) => x.toUpperCase())
+      .map(x => (x === x.toUpperCase() ? `_${x}` : x))
+      .map(x => x.toUpperCase())
       .join('');
 
     return baseNativeEventEmitter.addListener(
       PolarBle.getConstants()[eventTypeConstant],
-      listener
+      listener,
     );
   },
 });
@@ -146,7 +146,7 @@ const searchForDevice = () => PolarBle.searchForDevice() as Promise<void>;
 export const startAutoConnectToDevice = (
   rssi: number,
   service?: string,
-  polarDeviceType?: string
+  polarDeviceType?: string,
 ) => PolarBle.startAutoConnectToDevice(rssi, service, polarDeviceType);
 
 export const usePolarBle = () => {
@@ -157,160 +157,158 @@ export const usePolarBle = () => {
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('deviceFound', (deviceInfo) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('deviceFound', deviceInfo =>
+        setDeviceMap(x => ({
           ...x,
           [deviceInfo.deviceId]: {
             ...x[deviceInfo.deviceId],
             ...deviceInfo,
             state: 'disconnected',
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('deviceConnecting', (deviceInfo) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('deviceConnecting', deviceInfo =>
+        setDeviceMap(x => ({
           ...x,
           [deviceInfo.deviceId]: {
             ...x[deviceInfo.deviceId],
             ...deviceInfo,
             state: 'connecting',
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('deviceConnected', (deviceInfo) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('deviceConnected', deviceInfo =>
+        setDeviceMap(x => ({
           ...x,
           [deviceInfo.deviceId]: {
             ...x[deviceInfo.deviceId],
             ...deviceInfo,
             state: 'connected',
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener(
-        'deviceDisconnected',
-        (deviceInfo) =>
-          setDeviceMap((x) => ({
-            ...x,
-            [deviceInfo.deviceId]: { ...deviceInfo, state: 'disconnected' },
-          }))
+      PolarBleEventEmitter.addEventListener('deviceDisconnected', deviceInfo =>
+        setDeviceMap(x => ({
+          ...x,
+          [deviceInfo.deviceId]: {...deviceInfo, state: 'disconnected'},
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('batteryLevelReceived', (data) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('batteryLevelReceived', data =>
+        setDeviceMap(x => ({
           ...x,
           [data.identifier]: {
             ...x[data.identifier],
             batteryLevel: data.batteryLevel,
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('disInformationReceived', (data) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('disInformationReceived', data =>
+        setDeviceMap(x => ({
           ...x,
           [data.identifier]: {
             ...x[data.identifier],
-            dis: { uuid: data.uuid, value: data.value },
+            dis: {uuid: data.uuid, value: data.value},
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
       PolarBleEventEmitter.addEventListener('blePowerOn', () =>
-        setBlePoweredOn(true)
+        setBlePoweredOn(true),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
       PolarBleEventEmitter.addEventListener('blePowerOff', () =>
-        setBlePoweredOn(false)
+        setBlePoweredOn(false),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('hrFeatureReady', (identifier) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('hrFeatureReady', identifier =>
+        setDeviceMap(x => ({
           ...x,
           [identifier]: {
             ...x[identifier],
             hrFeatureReady: true,
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('ftpFeatureReady', (identifier) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('ftpFeatureReady', identifier =>
+        setDeviceMap(x => ({
           ...x,
           [identifier]: {
             ...x[identifier],
             ftpFeatureReady: true,
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('streamingFeaturesReady', (data) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('streamingFeaturesReady', data =>
+        setDeviceMap(x => ({
           ...x,
           [data.identifier]: {
             ...x[data.identifier],
             streamingFeatures: data.features,
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   useEffect(
     () =>
-      PolarBleEventEmitter.addEventListener('hrValueReceived', (data) =>
-        setDeviceMap((x) => ({
+      PolarBleEventEmitter.addEventListener('hrValueReceived', data =>
+        setDeviceMap(x => ({
           ...x,
           [data.identifier]: {
             ...x[data.identifier],
             heartRate: data.data,
           },
-        }))
+        })),
       ).remove,
-    []
+    [],
   );
 
   return {

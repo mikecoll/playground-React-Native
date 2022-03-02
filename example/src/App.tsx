@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 
-import { StyleSheet, View, Text, Button } from 'react-native';
-import { usePolarBle } from 'react-native-polar-ble';
+import {StyleSheet, View, Text, Button} from 'react-native';
+import {usePolarBle} from 'react-native-polar-ble';
 
 export default function App() {
   const {
@@ -20,7 +20,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Button title="Search for device" onPress={searchForDevice} />
-      {devices.map((x) => (
+      {devices.map(x => (
         <View>
           {x.state === 'connected' ? (
             <Button

@@ -11,7 +11,7 @@ npm install react-native-polar-ble
 ## Usage
 
 ```js
-import { multiply } from "react-native-polar-ble";
+import {multiply} from 'react-native-polar-ble';
 
 // ...
 
