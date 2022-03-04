@@ -133,15 +133,16 @@ export const PolarBleEventEmitter = Object.assign<
   },
 });
 
-const configure = (features: number) => PolarBle.configure(features);
+export const configure = (features: number) => PolarBle.configure(features);
 
-const connectToDevice = (id: string) =>
+export const connectToDevice = (id: string) =>
   PolarBle.connectToDevice(id) as Promise<void>;
 
-const disconnectFromDevice = (id: string) =>
+export const disconnectFromDevice = (id: string) =>
   PolarBle.disconnectFromDevice(id) as Promise<void>;
 
-const searchForDevice = () => PolarBle.searchForDevice() as Promise<void>;
+export const searchForDevice = () =>
+  PolarBle.searchForDevice() as Promise<void>;
 
 export const startAutoConnectToDevice = (
   rssi: number,
