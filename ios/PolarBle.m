@@ -3,7 +3,9 @@
 @interface RCT_EXTERN_MODULE (PolarBle, NSObject)
 
 _RCT_EXTERN_REMAP_METHOD(configure, configureWithFeatures
-                         : (NSInteger)features, NO)
+                         : (NSInteger)features resolver
+                         : (RCTPromiseResolveBlock)resolve rejecter
+                         : (RCTPromiseRejectBlock)reject, NO)
 
 RCT_EXTERN_METHOD(connectToDevice
                   : (NSString *)identifier resolver

@@ -52,82 +52,84 @@ class PolarBleModule(private  val reactContext: ReactApplicationContext) : React
     }
 
     @ReactMethod
-    fun configure(features: Int) {
-        api = defaultImplementation(reactContext, features).apply {
-            setApiCallback(object : PolarBleApiCallback() {
-                override fun blePowerStateChanged(powered: Boolean) {
-                    super.blePowerStateChanged(powered)
-                    sendEvent(if (powered) PolarEvent.BLE_POWER_ON.name else PolarEvent.BLE_POWER_OFF.name)
-                }
+    fun configure(features: Int, promise: Promise) {
+        runCatching {
+            api = defaultImplementation(reactContext, features).apply {
+                setApiCallback(object : PolarBleApiCallback() {
+                    override fun blePowerStateChanged(powered: Boolean) {
+                        super.blePowerStateChanged(powered)
+                        sendEvent(if (powered) PolarEvent.BLE_POWER_ON.name else PolarEvent.BLE_POWER_OFF.name)
+                    }
 
-                override fun deviceConnected(polarDeviceInfo: PolarDeviceInfo) {
-                    super.deviceConnected(polarDeviceInfo)
-                    sendEvent(PolarEvent.DEVICE_CONNECTED.name, polarDeviceInfo.createMap())
-                }
+                    override fun deviceConnected(polarDeviceInfo: PolarDeviceInfo) {
+                        super.deviceConnected(polarDeviceInfo)
+                        sendEvent(PolarEvent.DEVICE_CONNECTED.name, polarDeviceInfo.createMap())
+                    }
 
-                override fun deviceConnecting(polarDeviceInfo: PolarDeviceInfo) {
-                    super.deviceConnecting(polarDeviceInfo)
-                    sendEvent(PolarEvent.DEVICE_CONNECTING.name, polarDeviceInfo.createMap())
-                }
+                    override fun deviceConnecting(polarDeviceInfo: PolarDeviceInfo) {
+                        super.deviceConnecting(polarDeviceInfo)
+                        sendEvent(PolarEvent.DEVICE_CONNECTING.name, polarDeviceInfo.createMap())
+                    }
 
-                override fun deviceDisconnected(polarDeviceInfo: PolarDeviceInfo) {
-                    super.deviceDisconnected(polarDeviceInfo)
-                    sendEvent(PolarEvent.DEVICE_DISCONNECTED.name, polarDeviceInfo.createMap())
-                }
+                    override fun deviceDisconnected(polarDeviceInfo: PolarDeviceInfo) {
+                        super.deviceDisconnected(polarDeviceInfo)
+                        sendEvent(PolarEvent.DEVICE_DISCONNECTED.name, polarDeviceInfo.createMap())
+                    }
 
-                override fun streamingFeaturesReady(identifier: String, features: MutableSet<PolarBleApi.DeviceStreamingFeature>) {
-                    super.streamingFeaturesReady(identifier, features)
-                    sendEvent(PolarEvent.STREAMING_FEATURES_READY.name, Arguments.createMap().apply {
-                        putString("identifier", identifier)
-                        putArray("features", Arguments.fromArray(features.map {
-                            it.ordinal
-                        }))
-                    })
-                }
-
-                override fun hrFeatureReady(identifier: String) {
-                    super.hrFeatureReady(identifier)
-                    sendEvent(PolarEvent.HR_FEATURE_READY.name, identifier)
-                }
-
-                override fun disInformationReceived(identifier: String, uuid: UUID, value: String) {
-                    super.disInformationReceived(identifier, uuid, value)
-                    sendEvent(PolarEvent.DIS_INFORMATION_RECEIVED.name, Arguments.createMap().apply {
-                        putString("identifier", identifier)
-                        putString("uuid", uuid.toString())
-                        putString("value", value)
-                    })
-                }
-
-                override fun batteryLevelReceived(identifier: String, level: Int) {
-                    super.batteryLevelReceived(identifier, level)
-                    sendEvent(PolarEvent.BATTERY_LEVEL_RECEIVED.name, Arguments.createMap().apply {
-                        putString("identifier", identifier)
-                        putInt("level", level)
-                    })
-                }
-
-                override fun hrNotificationReceived(identifier: String, data: PolarHrData) {
-                    super.hrNotificationReceived(identifier, data)
-                    sendEvent(PolarEvent.HR_VALUE_RECEIVED.name, Arguments.createMap().apply {
-                        putString("identifier", identifier)
-                        putMap("data", Arguments.createMap().apply {
-                            putInt("hr", data.hr)
-                            putArray("rrs", Arguments.fromList(data.rrs))
-                            putArray("rrsMs", Arguments.fromList(data.rrsMs))
-                            putBoolean("contactStatus", data.contactStatus)
-                            putBoolean("contactStatusSupported", data.contactStatusSupported)
-                            putBoolean("rrAvailable", data.rrAvailable)
+                    override fun streamingFeaturesReady(identifier: String, features: MutableSet<PolarBleApi.DeviceStreamingFeature>) {
+                        super.streamingFeaturesReady(identifier, features)
+                        sendEvent(PolarEvent.STREAMING_FEATURES_READY.name, Arguments.createMap().apply {
+                            putString("identifier", identifier)
+                            putArray("features", Arguments.fromArray(features.map {
+                                it.ordinal
+                            }))
                         })
-                    })
-                }
+                    }
 
-                override fun polarFtpFeatureReady(identifier: String) {
-                    super.polarFtpFeatureReady(identifier)
-                    sendEvent(PolarEvent.FTP_FEATURE_READY.name, identifier)
-                }
-            })
-        }
+                    override fun hrFeatureReady(identifier: String) {
+                        super.hrFeatureReady(identifier)
+                        sendEvent(PolarEvent.HR_FEATURE_READY.name, identifier)
+                    }
+
+                    override fun disInformationReceived(identifier: String, uuid: UUID, value: String) {
+                        super.disInformationReceived(identifier, uuid, value)
+                        sendEvent(PolarEvent.DIS_INFORMATION_RECEIVED.name, Arguments.createMap().apply {
+                            putString("identifier", identifier)
+                            putString("uuid", uuid.toString())
+                            putString("value", value)
+                        })
+                    }
+
+                    override fun batteryLevelReceived(identifier: String, level: Int) {
+                        super.batteryLevelReceived(identifier, level)
+                        sendEvent(PolarEvent.BATTERY_LEVEL_RECEIVED.name, Arguments.createMap().apply {
+                            putString("identifier", identifier)
+                            putInt("level", level)
+                        })
+                    }
+
+                    override fun hrNotificationReceived(identifier: String, data: PolarHrData) {
+                        super.hrNotificationReceived(identifier, data)
+                        sendEvent(PolarEvent.HR_VALUE_RECEIVED.name, Arguments.createMap().apply {
+                            putString("identifier", identifier)
+                            putMap("data", Arguments.createMap().apply {
+                                putInt("hr", data.hr)
+                                putArray("rrs", Arguments.fromList(data.rrs))
+                                putArray("rrsMs", Arguments.fromList(data.rrsMs))
+                                putBoolean("contactStatus", data.contactStatus)
+                                putBoolean("contactStatusSupported", data.contactStatusSupported)
+                                putBoolean("rrAvailable", data.rrAvailable)
+                            })
+                        })
+                    }
+
+                    override fun polarFtpFeatureReady(identifier: String) {
+                        super.polarFtpFeatureReady(identifier)
+                        sendEvent(PolarEvent.FTP_FEATURE_READY.name, identifier)
+                    }
+                })
+            }
+        }.onSuccess(promise::resolve).onFailure(promise::reject)
     }
 
     @ReactMethod

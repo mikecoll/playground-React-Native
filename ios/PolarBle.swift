@@ -56,10 +56,14 @@ class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObser
         return true
     }
 
-    @objc(configureWithFeatures:)
-    func configure(features: Int) {
+    @objc(configureWithFeatures:resolver:rejecter:)
+    func configure(
+        features: Int, resolver resolve: RCTPromiseResolveBlock,
+        rejecter reject: RCTPromiseRejectBlock
+    ) {
         api = PolarBleApiDefaultImpl.polarImplementation(.main, features: features)
         setObservers()
+        resolve(nil)
     }
 
     @objc(connectToDevice:resolver:rejecter:)
