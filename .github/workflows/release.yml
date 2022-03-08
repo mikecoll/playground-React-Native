@@ -54,6 +54,6 @@ jobs:
       - run: yarn typescript
       - run: yarn lint
       - run: yarn prepare
-      - run: yarn release ${{ fromJSON(github.event.inputs.dryRun) && '--dry-run' || '' }} ${{ github.event.inputs.preRelease != 'none' && join(['--preRelease=', github.event.inputs.preRelease], '') || '' }}
+      - run: yarn release ${{ fromJSON(github.event.inputs.dryRun) && '--dry-run' || '' }} ${{ github.event.inputs.preRelease != 'none' && format('--preRelease={0}', github.event.inputs.preRelease) || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
