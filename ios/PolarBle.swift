@@ -130,7 +130,7 @@ class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObser
 
     @objc(startAutoConnectToDeviceWithRssi:service:polarDeviceType:resolver:rejecter:)
     func startAutoConnectToDevice(
-        rssi: Int, service: String, polarDeviceType: String,
+        rssi: Int, service: String? = nil, polarDeviceType: String? = nil,
         resolver resolve: @escaping RCTPromiseResolveBlock,
         rejecter reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -141,7 +141,7 @@ class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObser
 
             autoConnectDisposable?.dispose()
             autoConnectDisposable = api.startAutoConnectToDevice(
-                rssi, service: CBUUID(string: service), polarDeviceType: polarDeviceType
+                rssi, service: service.map { CBUUID(string: $0) }, polarDeviceType: polarDeviceType
             )
             .subscribe { event in
                 switch event {
