@@ -1,6 +1,6 @@
 {
   "name": "react-native-polar-ble",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "React Native bridge for polar-ble-sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
