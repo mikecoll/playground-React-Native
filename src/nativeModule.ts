@@ -13,7 +13,9 @@ export const PolarBle = NativeModules.PolarBle
       {},
       {
         get() {
-          throw new Error(LINKING_ERROR);
+          if (process.env.NODE_ENV !== 'test') {
+            throw new Error(LINKING_ERROR);
+          }
         },
       },
     );
