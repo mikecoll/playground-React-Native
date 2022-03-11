@@ -14,9 +14,7 @@ export const PolarBle =
         {},
         {
           get() {
-            if (process.env.NODE_ENV !== 'test') {
-              throw new Error(LINKING_ERROR);
-            }
+            throw new Error(LINKING_ERROR);
           },
         },
       );
