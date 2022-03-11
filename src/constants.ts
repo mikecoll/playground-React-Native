@@ -13,7 +13,7 @@ const {
   FTP_FEATURE_READY,
   STREAMING_FEATURES_READY,
   HR_VALUE_RECEIVED,
-} = PolarBle?.getConstants() as Record<string, string>;
+} = (PolarBle?.getConstants() as Record<string, string>) ?? {};
 
 export const Events = {
   DEVICE_FOUND,

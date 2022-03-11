@@ -7,18 +7,19 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo managed workflow\n';
 
-export const PolarBle = NativeModules.PolarBle
-  ? NativeModules.PolarBle
-  : new Proxy(
-      {},
-      {
-        get() {
-          if (process.env.NODE_ENV !== 'test') {
-            throw new Error(LINKING_ERROR);
-          }
+export const PolarBle =
+  NativeModules.PolarBle !== undefined || process.env.NODE_ENV === 'test'
+    ? NativeModules.PolarBle
+    : new Proxy(
+        {},
+        {
+          get() {
+            if (process.env.NODE_ENV !== 'test') {
+              throw new Error(LINKING_ERROR);
+            }
+          },
         },
-      },
-    );
+      );
 
 const baseNativeEventEmitter = new NativeEventEmitter(PolarBle);
 
