@@ -26,6 +26,7 @@ enum PolarBleError: Error {
 class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObserver,
     PolarBleApiDeviceInfoObserver, PolarBleApiDeviceFeaturesObserver, PolarBleApiDeviceHrObserver
 {
+    internal var hasListeners = false
     private var api: PolarBleApi?
     private var autoConnectDisposable: Disposable?
     private var searchDisposable: Disposable?
@@ -33,10 +34,21 @@ class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObser
     @objc override func startObserving() {
         super.startObserving()
         setObservers()
+        hasListeners = true
+    }
+
+    @objc override func stopObserving() {
+        super.stopObserving()
+        hasListeners = false
     }
 
     @objc override func supportedEvents() -> [String]! {
         return PolarEvent.allCases.map { $0.rawValue }
+    }
+
+    @objc override func sendEvent(withName name: String!, body: Any!) {
+        guard hasListeners else { return }
+        super.sendEvent(withName: name, body: body)
     }
 
     @objc override func constantsToExport() -> [AnyHashable: Any]! {
