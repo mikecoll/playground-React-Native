@@ -38,6 +38,12 @@ class PolarBleModule(private  val reactContext: ReactApplicationContext) : React
             PolarEvent.values().forEach {
                 put(it.name, it.name)
             }
+            put("HR", PolarBleApi.FEATURE_HR)
+            put("DEVICE_INFO", PolarBleApi.FEATURE_DEVICE_INFO)
+            put("BATTERY_STATUS", PolarBleApi.FEATURE_BATTERY_INFO)
+            put("POLAR_SENSOR_STREAMING", PolarBleApi.FEATURE_POLAR_SENSOR_STREAMING)
+            put("POLAR_FILE_TRANSFER", PolarBleApi.FEATURE_POLAR_FILE_TRANSFER)
+            put("ALL_FEATURES", PolarBleApi.ALL_FEATURES)
         }
     }
 

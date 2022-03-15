@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useEffect} from 'react';
 
 import {StyleSheet, View, Text, Button} from 'react-native';
-import {usePolarBle} from 'react-native-polar-ble';
+import {Features, usePolarBle} from 'react-native-polar-ble';
 
 export default function App() {
   const {
@@ -14,7 +14,7 @@ export default function App() {
   } = usePolarBle();
 
   useEffect(() => {
-    configure(0xff);
+    configure(Features.ALL_FEATURES);
   }, [configure]);
 
   return (

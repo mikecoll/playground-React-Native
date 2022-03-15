@@ -41,8 +41,13 @@ export const PolarBleEventEmitter = Object.assign<
   },
 });
 
-export const configure = (features: number) =>
-  PolarBle.configure(features) as Promise<void>;
+export const configure = (features: number | number[]) =>
+  PolarBle.configure(
+    Array.isArray(features)
+      ? // eslint-disable-next-line no-bitwise
+        features.reduce((prev, curr) => prev | curr)
+      : features,
+  ) as Promise<void>;
 
 export const connectToDevice = (id: string) =>
   PolarBle.connectToDevice(id) as Promise<void>;

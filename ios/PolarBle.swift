@@ -52,16 +52,14 @@ class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObser
     }
 
     @objc override func constantsToExport() -> [AnyHashable: Any]! {
-        let keyValuePairs = PolarEvent.allCases.map {
-            (
-                $0.rawValue
-                    .reduce("") { $0 + ($1.isUppercase ? "_\($1.lowercased())" : "\($1)") }
-                    .uppercased(),
-                $0.rawValue
-            )
+        let eventKeyValuePairs = PolarEvent.allCases.map {
+            ($0.rawValue.toCamelCase(), $0.rawValue as Any)
+        }
+        let featureKeyValuePairs = Features.allCases.map {
+            (String(describing: $0), $0.rawValue as Any)
         }
 
-        return Dictionary(uniqueKeysWithValues: keyValuePairs)
+        return Dictionary(uniqueKeysWithValues: eventKeyValuePairs + featureKeyValuePairs)
     }
 
     @objc override class func requiresMainQueueSetup() -> Bool {
@@ -251,5 +249,14 @@ class PolarBle: RCTEventEmitter, PolarBleApiObserver, PolarBleApiPowerStateObser
         api?.powerStateObserver = self
         api?.deviceHrObserver = self
         api?.deviceFeaturesObserver = self
+    }
+}
+
+extension String {
+    func toCamelCase() -> String {
+        return
+            self
+            .reduce("") { $0 + ($1.isUppercase ? "_\($1.lowercased())" : "\($1)") }
+            .uppercased()
     }
 }
